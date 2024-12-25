@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.urls import reverse
+from django.utils.text import slugify # method to convert to type slug
 
 # Create your models here.
 
@@ -12,9 +13,17 @@ class Book(models.Model):
     is_bestselling = models.BooleanField(default=False)
     # id field will automatically create by Django
 
+    # add slug field
+    slug = models.SlugField(default="", null=False) # Harry Potter 1 => harry-potter-1
+
     # using reverse to maintain url in index.html
     def get_absolute_url(self):
         return reverse("book-detail", args=[self.id])
+    
+    # add validation when save
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
     
     # add method to return show data
     def __str__(self):
