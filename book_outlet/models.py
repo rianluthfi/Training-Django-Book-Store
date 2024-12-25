@@ -14,11 +14,15 @@ class Book(models.Model):
     # id field will automatically create by Django
 
     # add slug field
-    slug = models.SlugField(default="", null=False) # Harry Potter 1 => harry-potter-1
+    slug = models.SlugField(default="", null=False, db_index=True) 
+    # sample slug  --> Harry Potter 1 => harry-potter-1 
+    # db_index can enhance to search
+    # not all field can be indexed, because when saved data that have index, will decrease performance
 
     # using reverse to maintain url in index.html
     def get_absolute_url(self):
-        return reverse("book-detail", args=[self.id])
+        # return reverse("book-detail", args=[self.id])
+        return reverse("book-detail", args=[self.slug])
     
     # add validation when save
     def save(self, *args, **kwargs):
